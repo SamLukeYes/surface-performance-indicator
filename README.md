@@ -32,5 +32,5 @@ $ spi &
 ```
 ## Autostart
 ```
-cp surface-performance-indicator.desktop ~/.config/autostart
+$ cp surface-performance-indicator.desktop ~/.config/autostart
 ```
