@@ -60,7 +60,8 @@ class indicator:
                 self.mode = mode
                 return
         # if fail, notify and quit
-        raise OSError('Failed to get current performance mode')
+        os.system("notify-send -u critical 'Surface Performance' 'Failed to get current performance mode'")
+        exit(1)
 
     def check(self, item):
         if self.items[self.mode] == item:
