@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=Surface Performance Indicator
-Comment=Start Input Method
+Name=Surface Performance
+Comment=Switching Surface performance modes
 Exec=spi
 Terminal=false
 Type=Application

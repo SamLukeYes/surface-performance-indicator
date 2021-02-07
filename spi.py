@@ -60,8 +60,7 @@ class indicator:
                 self.mode = mode
                 return
         # if fail, notify and quit
-        self.icon.notify('Unable to get performance status. Quiting.', 'Surface Performance Indicator')
-        self.stop()
+        raise OSError('Failed to get current performance mode')
 
     def check(self, item):
         if self.items[self.mode] == item:
