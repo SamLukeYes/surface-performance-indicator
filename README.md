@@ -14,22 +14,23 @@ Install [surface-performance-indicator](https://aur.archlinux.org/packages/surfa
 ### Other distro
 1. Install [surface-control](https://github.com/linux-surface/surface-control)
 2. Install `pystray`
-
-    $ pip3 install pystray
-
+```
+$ pip3 install pystray
+```
 3. Install `spi.py` to `PATH`
-
-    \# install -Dm755 spi.py /usr/local/bin/spi
-
+```
+# install -Dm755 spi.py /usr/local/bin/spi
+```
 ## Usage
 Before running for the first time, add your user to `surface-control` group
-
-    \# usermod -aG surface-control <YOUR_USER_NAME>
-
+```
+# usermod -aG surface-control <YOUR_USER_NAME>
+```
 Then you can run
-
-    $ spi &
-
+```
+$ spi &
+```
 ## Autostart
-
-    cp surface-performance-indicator.desktop ~/.config/autostart
+```
+cp surface-performance-indicator.desktop ~/.config/autostart
+```
