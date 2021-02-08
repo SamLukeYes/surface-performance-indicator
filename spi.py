@@ -17,7 +17,9 @@
 
 import pystray
 import os
+from threading import Thread
 from PIL import Image, ImageDraw
+from time import sleep
 
 modes = {
     'Normal': (1, (255, 255, 255)), # white
@@ -27,11 +29,20 @@ modes = {
 
 cli = '/usr/bin/surface'
 
+def mode_detect() -> str:
+    with os.popen(f'{cli} performance get') as stdout:
+        output = stdout.read()
+    for mode in modes.keys():
+        if mode in output:
+            return mode
+    # if fail, notify and quit
+    os.system("notify-send -u critical 'Surface Performance' 'Failed to get current performance mode'")
+    exit(1)
+
 class indicator:
 
     def __init__(self):
 
-        self.mode_detect()
         self.items = dict()
         for mode in modes.keys():
             self.items[mode] = pystray.MenuItem(mode, self.trigger, checked=self.check)
@@ -50,18 +61,8 @@ class indicator:
                 )
             )
         )
-        self.update_icon()
-
-    def mode_detect(self):
-        with os.popen(f'{cli} performance get') as stdout:
-            output = stdout.read()
-        for mode in modes.keys():
-            if mode in output:
-                self.mode = mode
-                return
-        # if fail, notify and quit
-        os.system("notify-send -u critical 'Surface Performance' 'Failed to get current performance mode'")
-        exit(1)
+        self.daemon = Thread(target=self.refresh)
+        self.mode = None
 
     def check(self, item):
         if self.items[self.mode] == item:
@@ -74,19 +75,33 @@ class indicator:
         code = os.system(command)
         if code:
             self.icon.notify(f"Error! surface-control returned code {code}", 'Surface Performance Indicator')
-        self.mode_detect()
-        self.update_icon()
+        #self.update_icon()
 
-    def update_icon(self):
+    def update_icon(self, mode):
         image = Image.new('RGB', (17, 17))
         draw = ImageDraw.Draw(image)
         for x, y in ((0, 0), (0, 9), (9, 0), (9, 9)):
-            draw.rectangle((x, y, x+7, y+7), fill=modes[self.mode][1])
+            draw.rectangle((x, y, x+7, y+7), fill=modes[mode][1])
         self.icon.icon = image
 
+    def refresh(self):
+        while self.running:
+            mode = mode_detect()
+            if self.mode != mode:
+                self.mode = mode
+                self.update_icon(mode)
+                self.icon.update_menu()
+                sleep(1)
+
+    def start(self):
+        self.running = True
+        self.daemon.start()
+        sleep(1)
+        self.icon.run()
+
     def stop(self):
+        self.running = False
         self.icon.stop()
 
 if __name__ == '__main__':
-    app = indicator()
-    app.icon.run()
+    indicator().start()
