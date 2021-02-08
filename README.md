@@ -37,3 +37,6 @@ $ spi &
 ```
 $ cp surface-performance-indicator.desktop ~/.config/autostart
 ```
+
+## Known Issue
+- On Gnome (Wayland), if started by desktop entry (including autostart), the indicator does not fall back to tray icon when AppIndicator is not available.
